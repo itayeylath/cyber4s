@@ -1,0 +1,47 @@
+* {
+    direction: rtl;
+
+}
+a {
+text-decoration: none;
+}
+a:hover{
+text-decoration: underline;
+}
+
+
+
+.top_table{
+float: left;
+}
+
+img {
+float: left;
+overflow: hidden;
+}
+
+.topleft {
+position: absolute;
+top: 8px;
+left: 16px;
+font-size: 18px;
+}
+
+div.relative {
+position: relative;
+width: 400px;
+height: 200px;
+border: 10px solid #73AD21;
+} 
+p,h1,h2,h4,table{
+margin-right: 30px;
+margin-left: 30px;
+}
+
+div.ex2 {
+max-width: 1000px;
+margin: auto;
+border: 3px solid #73AD21;
+}
+
+
