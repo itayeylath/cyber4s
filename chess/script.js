@@ -28,26 +28,26 @@ class Piece {
   getPossibleMoves() {
 
     //array of relative moves for the piece
-    let relativeMoves =[];
+    let relativeMoves = [];
 
     if (this.type === PAWN) {
       relativeMoves = this.getPawnRelativeMoves();
-    } 
+    }
     else if (this.type === ROOK) {
       relativeMoves = this.getRookRelativeMoves();
-    } 
+    }
     else if (this.type === KNIGHT) {
       relativeMoves = this.getKnightRelativeMoves();
-    } 
+    }
     else if (this.type === BISHOP) {
       relativeMoves = this.getBishopRelativeMoves();
-    } 
+    }
     else if (this.type === KING) {
       relativeMoves = this.getKingRelativeMoves();
-    } 
+    }
     else if (this.type === QUEEN) {
       relativeMoves = this.getQueenRelativeMoves();
-    } 
+    }
     //bug check
     else {
       console.log("Unknown type", type)
@@ -85,7 +85,7 @@ class Piece {
         return [[1, 0]];
       }
     }
-    else if (this.row == 1) {
+    else if (this.row == 6) {
       return [[-2, 0], [-1, 0]];
     }
     else {
@@ -158,6 +158,19 @@ class BoardData {
     }
 
   }
+
+  getTeam(row, col) {
+    if (this.getPiece(row, col).player == undefined) {
+      return undefined;
+    }
+    if (this.getPiece(row, col).player == WHITE_PLAYER) {
+      return WHITE_PLAYER;
+    }
+    if (this.getPiece(row, col).player == BLACK_PLAYER) {
+      return BLACK_PLAYER;
+    }
+  }
+
 }
 
 // creat all pieces for new game
@@ -199,29 +212,46 @@ function addImg(cell, player, name) {
 
 // decoration by click
 function onCellClick(event, row, col) {
-  //print in the console row & col of the cell
-  console.log('row', row);
-  console.log('col', col);
+  const piece = boardData.getPiece(row, col);
+  //print piece in the console
+  console.log(piece)
+  // console.log(boardData.getTeam(row, col))
 
   // Clear all previous selcted and possible moves
   for (let i = 0; i < BOARD_SIZE; i++) {
     for (let j = 0; j < BOARD_SIZE; j++) {
       table.rows[i].cells[j].classList.remove('possible-move');
       table.rows[i].cells[j].classList.remove('selected');
+      table.rows[i].cells[j].classList.remove('enamy');
     }
   }
 
-  const piece = boardData.getPiece(row, col);
 
   //print possible moves for selceted cell
   if (piece !== undefined) {
     let possibleMoves = piece.getPossibleMoves();
     for (let possibleMove of possibleMoves) {
-      const cell = table.rows[possibleMove[0]].cells[possibleMove[1]];
-      cell.classList.add('possible-move');
+      const cellRow = possibleMove[0];
+      const cellCol = possibleMove[1];
+      const cell = table.rows[cellRow].cells[cellCol];
+
+
+      if (boardData.getPiece(cellRow, cellCol) == undefined) {
+        cell.classList.add('possible-move');
+      }
+
+      //W vs B
+      else if (boardData.getTeam(cellRow, cellCol) == WHITE_PLAYER && boardData.getTeam(row, col) == BLACK_PLAYER) {
+        cell.classList.add('enamy');
+      }
+
+      //B vs W
+      else if (boardData.getTeam(cellRow, cellCol) == BLACK_PLAYER && boardData.getTeam(row, col) == WHITE_PLAYER) {
+        cell.classList.add('enamy');
+      }
     }
   }
-  
+
   // Show selected cell
   selectedCell = event.currentTarget;
   selectedCell.classList.add('selected');
@@ -249,10 +279,10 @@ function creatCessBoard() {
   //creat array of pieces for new game
   boardData = new BoardData(getInitialpieces());
 
-//print in the console board data
- console.log(boardData);
+  //print in the console board data
+  console.log(boardData);
 
- //add image for every piece
+  //add image for every piece
   for (let piece of boardData.pieces) {
     addImg(table.rows[piece.row].cells[piece.col], piece.player, piece.type);
   }
@@ -260,5 +290,4 @@ function creatCessBoard() {
 
 // by loaded the page the func started
 window.addEventListener('load', creatCessBoard);
-
 

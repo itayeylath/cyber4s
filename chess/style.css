@@ -51,3 +51,12 @@ table {
 .possible-move {
     background: green;
 }
+
+.enamy {
+    background: red;
+    
+}
+.friend {
+    background: none;
+    
+}
