@@ -24,6 +24,11 @@ class Piece {
     this.player = player;
   }
 
+  replaceRowAndCol(newrow, newcol){
+    this.row = newrow;
+    this.col = newcol;
+  }
+
   //possible move of every piece
   getPossibleMoves() {
 
@@ -159,6 +164,19 @@ class BoardData {
 
   }
 
+  getindex(row, col) {
+    let i = -1 ;
+    let index ;
+    for (const piece of this.pieces) {
+      i++
+      if (piece.row === row && piece.col === col) {
+        index = i ;
+        return index;
+      }
+    }
+
+  }
+
   getTeam(row, col) {
     if (this.getPiece(row, col).player == undefined) {
       return undefined;
@@ -171,22 +189,30 @@ class BoardData {
     }
   }
 
-  arrayRemove(arr, value) { 
-    
-    return arr.filter(function(ele){ 
-        return ele != value; 
-    });
-}
+  
 
-  getMove(row, col, type, player){
+  getMove(row, col, type, player, lastrow, lastcol, lastCell) {
+    let index;
     
-    // let active = this.getPiece(row.col);
-   this.pieces.push(new Piece(row, col, type, player));
-   addImg(table.rows[row].cells[col], player, type);
-   
+    for (let i = 0; i < 32; i++){
+
+    }
+
+    //add last piece img
+    addImg(table.rows[row].cells[col], player, type);
+    //remove last piece img
+    lastCell.getElementsByTagName("img")[0].remove();
+    // index = this.getindex(7, 4) ;
+    // updatePiecesArray(boardData.pieces, index, row, col, player, type);
   }
 
 }
+
+function updatePiecesArray(arr, index ,row, col, type, player){
+  arr[index] = new Piece(row, col, type, player);
+   
+} 
+
 
 // creat all pieces for new game
 function getInitialpieces() {
@@ -225,27 +251,22 @@ function addImg(cell, player, name) {
   cell.appendChild(img);
 }
 
-function removeImg(cell) {
-  cell.removeImg ;
-}
+// function removeImg(cell) {
+//   cell.removechild(img)
+// }
 
 
-let lastPiece = [] ;
-let lastCell = [] ;
+let lastPiece = [];
+let lastCell = [];
 
-let counterLastPiece = 0 ;
-function lastSelected (event, row, col) {
-  
-}
+let counterLastPiece = -1;
 
 // decoration by click
 function onCellClick(event, row, col) {
   const piece = boardData.getPiece(row, col);
-  
-  //print piece in the console
-  console.log('current piece')
-  console.log(piece)
-  // console.log(boardData.getTeam(row, col))
+
+
+
 
   // Clear all previous selcted and possible moves
   for (let i = 0; i < BOARD_SIZE; i++) {
@@ -265,16 +286,13 @@ function onCellClick(event, row, col) {
       const cellCol = possibleMove[1];
       const cell = table.rows[cellRow].cells[cellCol];
 
-
       if (boardData.getPiece(cellRow, cellCol) == undefined) {
         cell.classList.add('possible-move');
       }
-
       //W vs B
       else if (boardData.getTeam(cellRow, cellCol) == WHITE_PLAYER && boardData.getTeam(row, col) == BLACK_PLAYER) {
         cell.classList.add('enamy');
       }
-
       //B vs W
       else if (boardData.getTeam(cellRow, cellCol) == BLACK_PLAYER && boardData.getTeam(row, col) == WHITE_PLAYER) {
         cell.classList.add('enamy');
@@ -286,29 +304,24 @@ function onCellClick(event, row, col) {
   selectedCell = event.currentTarget;
   selectedCell.classList.add('selected');
 
-
-
   // move piece 
-  if (counterLastPiece !== 0){
-    //print in the console the last piece we choose
-    console.log ('last piece')
-    console.log(lastPiece[counterLastPiece - 1])
-    console.log(lastCell[counterLastPiece - 1])
+  if (counterLastPiece > -1 ) {
     
-    if(lastPiece[counterLastPiece - 1] !== undefined && piece == undefined){
-      boardData.getMove(row,col,lastPiece[counterLastPiece - 1].type, lastPiece[counterLastPiece - 1].player )
-     
+    if (lastPiece[counterLastPiece] !== undefined && piece == undefined) { 
+      boardData.getMove(row, col, lastPiece[counterLastPiece].type, lastPiece[counterLastPiece].player, lastCell[counterLastPiece].row, lastPiece[counterLastPiece].col, lastCell[counterLastPiece] ) ;
       
-     
+      updatePiecesArray(boardData.pieces, boardData.getindex(lastPiece[counterLastPiece].row,lastPiece[counterLastPiece].col ),row ,col, lastPiece[counterLastPiece].type, lastPiece[counterLastPiece].player) ;
+      
     }
   }
+  
 
-  
-   lastPiece.push(piece);
-   lastCell.push(selectedCell)
-   counterLastPiece ++ ;
-  
-  
+
+  lastPiece.push(piece);
+  lastCell.push(selectedCell)
+  counterLastPiece++;
+
+
 }
 
 //creat the board
@@ -327,7 +340,7 @@ function creatCessBoard() {
       }
       // every click on cell onCellClick will start
       cell.addEventListener('click', (event) => onCellClick(event, row, col));
-      if (lastPiece == undefined){
+      if (lastPiece == undefined) {
         cell.addEventListener('click', (event) => lastSelected(event, row, col));
       }
     }
@@ -335,6 +348,7 @@ function creatCessBoard() {
 
   //creat array of pieces for new game
   boardData = new BoardData(getInitialpieces());
+
 
   //print in the console board data
   console.log(boardData);
