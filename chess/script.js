@@ -110,7 +110,7 @@ class Piece {
   }
 
   getKnightRelativeMoves() {
-    return [[2, 1], [2, -1], [-2, 1], [-2, -1]];
+    return [[2, 1], [2, -1], [-2, 1], [-2, -1], [1,2], [-1,2], [1,-2], [-1,-2]];
   }
 
   getBishopRelativeMoves() {
@@ -164,6 +164,7 @@ class BoardData {
 
   }
 
+  //get piece index in the array
   getindex(row, col) {
     let i = -1 ;
     let index ;
@@ -177,6 +178,7 @@ class BoardData {
 
   }
 
+  // get team color of piece
   getTeam(row, col) {
     if (this.getPiece(row, col).player == undefined) {
       return undefined;
@@ -189,30 +191,18 @@ class BoardData {
     }
   }
 
-  
-
+  //move piece
   getMove(row, col, type, player, lastrow, lastcol, lastCell) {
-    let index;
-    
-    for (let i = 0; i < 32; i++){
 
-    }
-
-    //add last piece img
     addImg(table.rows[row].cells[col], player, type);
-    //remove last piece img
     lastCell.getElementsByTagName("img")[0].remove();
-    // index = this.getindex(7, 4) ;
-    // updatePiecesArray(boardData.pieces, index, row, col, player, type);
   }
 
 }
 
 function updatePiecesArray(arr, index ,row, col, type, player){
   arr[index] = new Piece(row, col, type, player);
-   
 } 
-
 
 // creat all pieces for new game
 function getInitialpieces() {
@@ -251,22 +241,14 @@ function addImg(cell, player, name) {
   cell.appendChild(img);
 }
 
-// function removeImg(cell) {
-//   cell.removechild(img)
-// }
-
-
+// up
 let lastPiece = [];
 let lastCell = [];
-
 let counterLastPiece = -1;
 
-// decoration by click
+// decoration and move by click
 function onCellClick(event, row, col) {
   const piece = boardData.getPiece(row, col);
-
-
-
 
   // Clear all previous selcted and possible moves
   for (let i = 0; i < BOARD_SIZE; i++) {
@@ -276,7 +258,6 @@ function onCellClick(event, row, col) {
       table.rows[i].cells[j].classList.remove('enamy');
     }
   }
-
 
   //print possible moves for selceted cell
   if (piece !== undefined) {
@@ -311,16 +292,12 @@ function onCellClick(event, row, col) {
       boardData.getMove(row, col, lastPiece[counterLastPiece].type, lastPiece[counterLastPiece].player, lastCell[counterLastPiece].row, lastPiece[counterLastPiece].col, lastCell[counterLastPiece] ) ;
       
       updatePiecesArray(boardData.pieces, boardData.getindex(lastPiece[counterLastPiece].row,lastPiece[counterLastPiece].col ),row ,col, lastPiece[counterLastPiece].type, lastPiece[counterLastPiece].player) ;
-      
     }
   }
   
-
-
   lastPiece.push(piece);
   lastCell.push(selectedCell)
   counterLastPiece++;
-
 
 }
 
@@ -350,7 +327,7 @@ function creatCessBoard() {
   boardData = new BoardData(getInitialpieces());
 
 
-  //print in the console board data
+  //print in the console first board data
   console.log(boardData);
 
   //add image for every piece
@@ -361,4 +338,3 @@ function creatCessBoard() {
 
 // by loaded the page the func started
 window.addEventListener('load', creatCessBoard);
-
