@@ -1,3 +1,5 @@
+//test
+
 //Constant variables
 const BOARD_SIZE = 8;
 const WHITE_PLAYER = 'white';
