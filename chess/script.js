@@ -1,4 +1,3 @@
-//test
 
 //Constant variables
 const BOARD_SIZE = 8;
@@ -28,7 +27,7 @@ class Piece {
     this.player = player;
   }
 
-  replaceRowAndCol(newrow, newcol){
+  replaceRowAndCol(newrow, newcol) {
     this.row = newrow;
     this.col = newcol;
   }
@@ -62,16 +61,6 @@ class Piece {
       console.log("Unknown type", type)
     }
 
-    // array of absolut moves for the player from his position
-    // let absoluteMoves = [];
-
-    // for (let relativeMove of relativeMoves) {
-    //   const absoluteRow = this.row + relativeMove[0];
-    //   const absoluteCol = this.col + relativeMove[1];
-    //   absoluteMoves.push([absoluteRow, absoluteCol]);
-    // }
-
-    // array of filtered moves according to border size
     let filteredMoves = [];
 
     for (let absoluteMove of moves) {
@@ -95,26 +84,31 @@ class Piece {
       // first move 
       if (this.row == 1) {
         let opositions = [];
+        let counter = 0;
+        opositions.push([this.row + 1, this.col]);
         opositions.push([this.row + 2, this.col]);
-        opositions.push([this.row + 1, this.col]); 
-        for (const oposition of opositions){
-          if(boardData.isEmpty(oposition[0], oposition[1]) == true){
-           result.push([oposition[0], oposition[1]])
+
+        for (const oposition of opositions) {
+          if (boardData.isEmpty(oposition[0], oposition[1]) == true && counter == 0) {
+            result.push([oposition[0], oposition[1]])
+          }
+          else {
+            counter++
           }
         }
       }
 
       //regular move
-       else if(boardData.isEmpty(this.row + 1, this.col) == true){
+      else if (boardData.isEmpty(this.row + 1, this.col) == true) {
         result.push([this.row + 1, this.col]);
-       }
-      
-      //eat move
-      if (boardData.isEmpty(this.row + 1, this.col +1) == false ){
-        result.push([this.row + 1, this.col +1])
       }
-      if (boardData.isEmpty(this.row +1, this.col -1) == false ){
-        result.push([this.row +1, this.col -1])
+
+      //eat move
+      if (boardData.isEmpty(this.row + 1, this.col + 1) == false) {
+        result.push([this.row + 1, this.col + 1])
+      }
+      if (boardData.isEmpty(this.row + 1, this.col - 1) == false) {
+        result.push([this.row + 1, this.col - 1])
       }
 
     }
@@ -123,30 +117,34 @@ class Piece {
     // first move
     else if (this.row == 6) {
       let opositions = [];
+      let counter = 0;
+      opositions.push([this.row - 1, this.col]);
       opositions.push([this.row - 2, this.col]);
-      opositions.push([this.row - 1, this.col]);  
-      for (const oposition of opositions){
-        if(boardData.isEmpty(oposition[0], oposition[1]) == true){
-         result.push([oposition[0], oposition[1]])
+      for (const oposition of opositions) {
+        if (boardData.isEmpty(oposition[0], oposition[1]) == true && counter == 0) {
+          result.push([oposition[0], oposition[1]])
+        }
+        else {
+          counter++
         }
       }
     }
 
     //regular move 
-     else if(boardData.isEmpty(this.row - 1, this.col) == true){
-        result.push([this.row - 1, this.col]);
-       }
-    
-       //eat move
-      if (boardData.isEmpty(this.row - 1, this.col +1) == false ){
-        result.push([this.row - 1, this.col +1])
-      }
-      if (boardData.isEmpty(this.row -1, this.col -1) == false ){
-        result.push([this.row -1, this.col -1])
-      }
-  
-    return result ;
+    else if (boardData.isEmpty(this.row - 1, this.col) == true) {
+      result.push([this.row - 1, this.col]);
     }
+
+    //eat move
+    if (boardData.isEmpty(this.row - 1, this.col + 1) == false) {
+      result.push([this.row - 1, this.col + 1])
+    }
+    if (boardData.isEmpty(this.row - 1, this.col - 1) == false) {
+      result.push([this.row - 1, this.col - 1])
+    }
+
+    return result;
+  }
 
   getRookMoves(boardData) {
     let result = [];
@@ -155,13 +153,13 @@ class Piece {
     result = result.concat(this.getMovesInDirection(1, 0, boardData));
     result = result.concat(this.getMovesInDirection(0, -1, boardData));
     result = result.concat(this.getMovesInDirection(0, 1, boardData));
-    
+
     return result;
   }
 
   getKnightMoves(boardData) {
     let result = [];
-    const Options = [[2, 1], [2, -1], [-2, 1], [-2, -1], [1,2], [-1,2], [1,-2], [-1,-2]];
+    const Options = [[2, 1], [2, -1], [-2, 1], [-2, -1], [1, 2], [-1, 2], [1, -2], [-1, -2]];
     for (let Option of Options) {
       let row = this.row + Option[0];
       let col = this.col + Option[1];
@@ -211,12 +209,12 @@ class Piece {
   }
 
   //get enamy color player
-  getOpponent(){
-    if (this.player == WHITE_PLAYER){
+  getOpponent() {
+    if (this.player == WHITE_PLAYER) {
       return BLACK_PLAYER;
     }
     return WHITE_PLAYER;
-    
+
   }
 
   //stop possible move after other player
@@ -228,8 +226,8 @@ class Piece {
       let col = this.col + directionCol * i;
       if (boardData.isEmpty(row, col) == true) {
         result.push([row, col]);
-      } 
-      else  {
+      }
+      else {
         result.push([row, col]);
         return result;
       }
@@ -256,32 +254,32 @@ class BoardData {
 
   }
 
- isEmpty(row, col){
-  if (this.getPiece(row, col) !== undefined ){
-    return false ;
+  isEmpty(row, col) {
+    if (this.getPiece(row, col) !== undefined) {
+      return false;
+    }
+    else {
+      return true;
+    }
   }
-   else{
-     return true ;
-   }
- }
 
- isPlayer(row, col, player) {
-  const piece = this.getPiece(row, col);
-  if(piece !== undefined && piece.player === player){
-    return true;
+  isPlayer(row, col, player) {
+    const piece = this.getPiece(row, col);
+    if (piece !== undefined && piece.player === player) {
+      return true;
+    }
+    else return false;
+
   }
-  else return false;
-  
-}
 
   //get piece index in the array
   getindex(row, col) {
-    let i = -1 ;
-    let index ;
+    let i = -1;
+    let index;
     for (const piece of this.pieces) {
       i++
       if (piece.row === row && piece.col === col) {
-        index = i ;
+        index = i;
         return index;
       }
     }
@@ -308,11 +306,21 @@ class BoardData {
     lastCell.getElementsByTagName("img")[0].remove();
   }
 
+  getremove(row, col) {
+    console.log(this.pieces[this.getindex(row, col)])
+    this.pieces.splice(this.getindex(row, col), 1);
+    table.rows[row].cells[col].getElementsByTagName("img")[0].remove();
+
+    console.log(boardData);
+
+
+  }
+
 }
 
-function updatePiecesArray(arr, index ,row, col, type, player){
+function updatePiecesArray(arr, index, row, col, type, player) {
   arr[index] = new Piece(row, col, type, player);
-} 
+}
 
 // creat all pieces for new game
 function getInitialpieces() {
@@ -353,7 +361,26 @@ function addImg(cell, player, name) {
 
 // decoration and move by click
 function onCellClick(event, row, col) {
+  let counterRemove = -1;
   const piece = boardData.getPiece(row, col);
+
+  if (counterLastPiece > -1) {
+    if (table.rows[row].cells[col].classList[1] == "possible-move") {
+      // move piece 
+      if (lastPiece[counterLastPiece] !== undefined && piece == undefined) {
+        boardData.getMove(row, col, lastPiece[counterLastPiece].type, lastPiece[counterLastPiece].player, lastCell[counterLastPiece].row, lastPiece[counterLastPiece].col, lastCell[counterLastPiece]);
+        updatePiecesArray(boardData.pieces, boardData.getindex(lastPiece[counterLastPiece].row, lastPiece[counterLastPiece].col), row, col, lastPiece[counterLastPiece].type, lastPiece[counterLastPiece].player);
+      }
+    }
+
+    else if (table.rows[row].cells[col].classList[1] == "enamy") {
+      boardData.getremove(row, col);
+      boardData.getMove(row, col, lastPiece[counterLastPiece].type, lastPiece[counterLastPiece].player, lastCell[counterLastPiece].row, lastPiece[counterLastPiece].col, lastCell[counterLastPiece]);
+      updatePiecesArray(boardData.pieces, boardData.getindex(lastPiece[counterLastPiece].row, lastPiece[counterLastPiece].col), row, col, lastPiece[counterLastPiece].type, lastPiece[counterLastPiece].player);
+    }
+
+  }
+
 
   // Clear all previous selcted and possible moves
   for (let i = 0; i < BOARD_SIZE; i++) {
@@ -390,16 +417,13 @@ function onCellClick(event, row, col) {
   selectedCell = event.currentTarget;
   selectedCell.classList.add('selected');
 
-  // move piece 
-  if (counterLastPiece > -1 ) {
-    
-    if (lastPiece[counterLastPiece] !== undefined && piece == undefined) { 
-      boardData.getMove(row, col, lastPiece[counterLastPiece].type, lastPiece[counterLastPiece].player, lastCell[counterLastPiece].row, lastPiece[counterLastPiece].col, lastCell[counterLastPiece] ) ;
-      
-      updatePiecesArray(boardData.pieces, boardData.getindex(lastPiece[counterLastPiece].row,lastPiece[counterLastPiece].col ),row ,col, lastPiece[counterLastPiece].type, lastPiece[counterLastPiece].player) ;
-    }
-  }
-  
+
+
+  // boardData.getremove(row, col);
+
+
+
+
   lastPiece.push(piece);
   lastCell.push(selectedCell)
   counterLastPiece++;
