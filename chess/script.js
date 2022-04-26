@@ -63,7 +63,7 @@ function onCellClick(event, row, col) {
     if (table.rows[row].cells[col].classList[1] == "possible-move") {
       // move piece 
       if (lastPiece[counterLastPiece] !== undefined && piece == undefined) { }
-      boardData.getMove(row, col, lastPiece[counterLastPiece].type, lastPiece[counterLastPiece].player, lastCell[counterLastPiece].row, lastPiece[counterLastPiece].col, lastCell[counterLastPiece]);
+      game.getMove(row, col, lastPiece[counterLastPiece].type, lastPiece[counterLastPiece].player, lastCell[counterLastPiece].row, lastPiece[counterLastPiece].col, lastCell[counterLastPiece]);
       updatePiecesArray(boardData.pieces, boardData.getindex(lastPiece[counterLastPiece].row, lastPiece[counterLastPiece].col), row, col, lastPiece[counterLastPiece].type, lastPiece[counterLastPiece].player);
       counterMove++;
     }
@@ -71,14 +71,14 @@ function onCellClick(event, row, col) {
     // eat piece
     else if (table.rows[row].cells[col].classList[1] == "enamy") {
       boardData.getremove(row, col);
-      boardData.getMove(row, col, lastPiece[counterLastPiece].type, lastPiece[counterLastPiece].player, lastCell[counterLastPiece].row, lastPiece[counterLastPiece].col, lastCell[counterLastPiece]);
+      game.getMove(row, col, lastPiece[counterLastPiece].type, lastPiece[counterLastPiece].player, lastCell[counterLastPiece].row, lastPiece[counterLastPiece].col, lastCell[counterLastPiece]);
       updatePiecesArray(boardData.pieces, boardData.getindex(lastPiece[counterLastPiece].row, lastPiece[counterLastPiece].col), row, col, lastPiece[counterLastPiece].type, lastPiece[counterLastPiece].player);
       counterMove++;
     }
     // Clear all previous selected and possible moves
     ClearBoard();
   }
-  if (piece !== undefined && counterMove === 0) {
+  if (piece !== undefined && counterMove === 0 && game.getTurnMoves(piece)) {
     let possibleMoves = piece.getPossibleMoves();
     for (let possibleMove of possibleMoves) {
       const cellRow = possibleMove[0];
@@ -97,6 +97,7 @@ function onCellClick(event, row, col) {
         cell.classList.add('enamy');
       }
     }
+    game.currentPlayer = piece.getOpponent();
   }
 
   // Show selected cell
@@ -129,9 +130,6 @@ function creatChessBoard() {
     }
   }
 
-  //creat array of pieces for new game
-  boardData = new BoardData(getInitialpieces());
-
   //print in the console first board data
   console.log(boardData);
 
@@ -141,5 +139,14 @@ function creatChessBoard() {
   }
 }
 
+function initGame() {
+  game = new Game(BLACK_PLAYER);
+  creatChessBoard();
+}
+
+
 // by loaded the page the func started
-window.addEventListener('load', creatChessBoard);
+window.addEventListener('load', initGame);
+
+
+

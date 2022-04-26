@@ -16,29 +16,22 @@ class Piece {
   
       if (this.type === PAWN) {
         moves = this.getPawnMoves(boardData);
-      }
-      else if (this.type === ROOK) {
+      }  else if (this.type === ROOK) {
         moves = this.getRookMoves(boardData);
-      }
-      else if (this.type === KNIGHT) {
+      }  else if (this.type === KNIGHT) {
         moves = this.getKnightMoves(boardData);
-      }
-      else if (this.type === BISHOP) {
+      }  else if (this.type === BISHOP) {
         moves = this.getBishopMoves(boardData);
-      }
-      else if (this.type === KING) {
+      }  else if (this.type === KING) {
         moves = this.getKingMoves(boardData);
-      }
-      else if (this.type === QUEEN) {
+      }  else if (this.type === QUEEN) {
         moves = this.getQueenMoves(boardData);
-      }
-      //bug check
-      else {
+      } //bug check
+         else {
         console.log("Unknown type", type)
       }
-  
       let filteredMoves = [];
-  
+       // filter moves in the board 8X8
       for (let absoluteMove of moves) {
         const absoluteRow = absoluteMove[0];
         const absoluteCol = absoluteMove[1];
@@ -51,27 +44,22 @@ class Piece {
   
     //function for every piece specific move
     getPawnMoves(boardData) {
-  
       let result = [];
-  
       //movs for W direction
       if (this.player == WHITE_PLAYER) {
-  
         // first move 
         if (this.row == 1) {
           let opositions = [];
           let counter = 0;
           opositions.push([this.row + 1, this.col]);
           opositions.push([this.row + 2, this.col]);
-  
           for (const oposition of opositions) {
-            if (boardData.isEmpty(oposition[0], oposition[1]) == true && counter == 0) {
-              result.push([oposition[0], oposition[1]])
-            }
-             else {
+           if (boardData.isEmpty(oposition[0], oposition[1]) == true && counter == 0) {
+            result.push([oposition[0], oposition[1]])
+            }  else {
               counter++
              }
-          }
+           }
         }
   
         //regular move
@@ -199,5 +187,12 @@ class Piece {
       }
       return result;
     }
+
+    getOpponent() {
+        if (this.player === WHITE_PLAYER) {
+          return BLACK_PLAYER;
+        }
+        return WHITE_PLAYER;
+      }
   
   }
