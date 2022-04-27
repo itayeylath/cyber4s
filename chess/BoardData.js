@@ -61,12 +61,6 @@ class BoardData {
   }
 
   
-  getremove(row, col) {
-    console.log(this.pieces[this.getindex(row, col)])
-    this.pieces.splice(this.getindex(row, col), 1);
-    table.rows[row].cells[col].getElementsByTagName("img")[0].remove();
-
-    console.log(boardData);
-  }
+ 
 
 }

@@ -26,22 +26,24 @@ table tr:nth-child(odd) td:nth-child(odd) {
 }  */
 
 table {
-    border-spacing: 0;
     border-style: solid;
     border-color: #000000;
-    margin: auto
+    margin: auto;
+    position: relative;
 }
 
 .light-cell {
     background: rgb(211, 210, 210);
     width: 45px;
     height: 45px;
+    user-select: none;
 }
 
 .dark-cell {
     background: rgb(63, 63, 63);
     width: 45px;
     height: 45px;
+    user-select: none;
 }
 
 .selected {
@@ -50,6 +52,8 @@ table {
 
 .possible-move {
     background: green;
+    p ;
+    
 }
 
 .enamy {
@@ -59,4 +63,22 @@ table {
 .friend {
     background: none;
     
+}
+
+
+.winner{
+    position:absolute;
+    left: 50%;
+    top: 50%;
+    transform:  translate(-50%, -50%);
+    background: white;
+    padding:  50px;
+    border-radius:  10px;
+    width:  max-content;
+
+}
+
+h1{
+    text-align:center;
+
 }

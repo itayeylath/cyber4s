@@ -4,6 +4,7 @@ class Game {
         //creat array of pieces for new game
       boardData = new BoardData(getInitialpieces());
       this.currentPlayer = firstPlayer;
+      this.winner = undefined;
     }
   
     // Tries to actually make a move. Returns true if successful.
@@ -30,9 +31,9 @@ class Game {
       
     addImg(table.rows[row].cells[col], player, type);
     lastCell.getElementsByTagName("img")[0].remove();
+    
   }
 
-  
     getTurnMoves(piece) {
       if (this.currentPlayer == piece.player) {
         return true;
@@ -41,5 +42,25 @@ class Game {
       return false;
       }
     }
+
+    getremove(row, col) {
+      if(boardData.pieces[boardData.getindex(row, col)].type === KING){
+        if(this.currentPlayer === BLACK_PLAYER){
+          this.winner = WHITE_PLAYER ;
+        }
+        else{
+          this.winner = BLACK_PLAYER ;
+        }
+      const WIneerPop = document.createElement("div");
+      WIneerPop.textContent = "the winner is " + this.winner ;
+      WIneerPop.className = 'winner' ;
+      table.appendChild(WIneerPop);
+      }
+      boardData.pieces.splice(boardData.getindex(row, col), 1);
+      table.rows[row].cells[col].getElementsByTagName("img")[0].remove();
+  
+      console.log(boardData);
+    }
+
   }
   

@@ -22,6 +22,13 @@ let turn = 1;
 
 function updatePiecesArray(arr, index, row, col, type, player) {
   arr[index] = new Piece(row, col, type, player);
+  if(game.currentPlayer === BLACK_PLAYER){
+    game.currentPlayer = WHITE_PLAYER ;
+  }
+  else{
+    game.currentPlayer = BLACK_PLAYER ;
+  }
+  
 }
 
 function ClearBoard() {
@@ -49,6 +56,7 @@ function getInitialpieces() {
 function addImg(cell, player, name) {
   const img = document.createElement("img")
   img.src = 'img/' + player + '/' + name + '.png';
+  img.draggable = false ;
   cell.appendChild(img);
 }
 
@@ -70,7 +78,7 @@ function onCellClick(event, row, col) {
 
     // eat piece
     else if (table.rows[row].cells[col].classList[1] == "enamy") {
-      boardData.getremove(row, col);
+      game.getremove(row, col);
       game.getMove(row, col, lastPiece[counterLastPiece].type, lastPiece[counterLastPiece].player, lastCell[counterLastPiece].row, lastPiece[counterLastPiece].col, lastCell[counterLastPiece]);
       updatePiecesArray(boardData.pieces, boardData.getindex(lastPiece[counterLastPiece].row, lastPiece[counterLastPiece].col), row, col, lastPiece[counterLastPiece].type, lastPiece[counterLastPiece].player);
       counterMove++;
@@ -78,7 +86,7 @@ function onCellClick(event, row, col) {
     // Clear all previous selected and possible moves
     ClearBoard();
   }
-  if (piece !== undefined && counterMove === 0 && game.getTurnMoves(piece)) {
+  if (piece !== undefined && counterMove === 0 && game.getTurnMoves(piece) && game.winner === undefined)  {
     let possibleMoves = piece.getPossibleMoves();
     for (let possibleMove of possibleMoves) {
       const cellRow = possibleMove[0];
@@ -97,11 +105,12 @@ function onCellClick(event, row, col) {
         cell.classList.add('enamy');
       }
     }
-    game.currentPlayer = piece.getOpponent();
   }
 
   // Show selected cell
-  selectedCell.classList.add('selected');
+  if(game.winner === undefined){
+    selectedCell.classList.add('selected');
+  }
 
   lastPiece.push(piece);
   lastCell.push(selectedCell)
