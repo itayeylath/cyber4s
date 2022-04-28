@@ -9,22 +9,6 @@ tr td {
     width: 50px;
 }
 
-/* table tr:nth-child(even) td:nth-child(odd) {
-    background-color: darkgrey;
-}
-
-table tr:nth-child(odd) td:nth-child(even) {
-    background-color: darkgrey;
-}
-
-table tr:nth-child(even) td:nth-child(even) {
-    background-color: white;
-}
-
-table tr:nth-child(odd) td:nth-child(odd) {
-    background-color: white;
-}  */
-
 table {
     border-style: solid;
     border-color: #000000;
@@ -33,14 +17,14 @@ table {
 }
 
 .light-cell {
-    background: rgb(211, 210, 210);
+    background: rgb(142, 81, 81);
     width: 45px;
     height: 45px;
     user-select: none;
 }
 
 .dark-cell {
-    background: rgb(63, 63, 63);
+    background: rgb(106, 106, 106);
     width: 45px;
     height: 45px;
     user-select: none;
@@ -52,33 +36,29 @@ table {
 
 .possible-move {
     background: green;
-    p ;
-    
 }
 
-.enamy {
+.enemy {
     background: red;
-    
 }
+
 .friend {
     background: none;
-    
 }
 
-
-.winner{
-    position:absolute;
+.winner {
+    position: absolute;
     left: 50%;
     top: 50%;
-    transform:  translate(-50%, -50%);
+    transform: translate(-50%, -50%);
     background: white;
-    padding:  50px;
-    border-radius:  10px;
-    width:  max-content;
+    padding: 50px;
+    border-radius: 10px;
+    width: max-content;
 
 }
 
-h1{
-    text-align:center;
-
+h1 {
+    text-align: center;
+    font-family: 'Franklin Gothic Medium';
 }

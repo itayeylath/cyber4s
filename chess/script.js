@@ -1,4 +1,3 @@
-
 //Constant variables
 const BOARD_SIZE = 8;
 const WHITE_PLAYER = 'white';
@@ -12,81 +11,66 @@ const QUEEN = 'queen';
 const PIECES = [ROOK, KNIGHT, BISHOP, KING, QUEEN, BISHOP, KNIGHT, ROOK];
 
 //no-Constant variables
-let selectedCell;
 let boardData;
 let table;
 let lastPiece = [];
 let lastCell = [];
 let counterLastPiece = -1;
-let turn = 1;
-
+// update BoardData after movement
 function updatePiecesArray(arr, index, row, col, type, player) {
   arr[index] = new Piece(row, col, type, player);
-  if(game.currentPlayer === BLACK_PLAYER){
-    game.currentPlayer = WHITE_PLAYER ;
+  if (game.currentPlayer === BLACK_PLAYER) {
+    game.currentPlayer = WHITE_PLAYER;
   }
-  else{
-    game.currentPlayer = BLACK_PLAYER ;
+  else {
+    game.currentPlayer = BLACK_PLAYER;
   }
-  
 }
-
 function ClearBoard() {
   for (let i = 0; i < BOARD_SIZE; i++) {
     for (let j = 0; j < BOARD_SIZE; j++) {
-      table.rows[i].cells[j].classList.remove('possible-move', 'selected', 'enamy');
+      table.rows[i].cells[j].classList.remove('possible-move', 'selected', 'enemy');
     }
   }
 }
-
-// creat all pieces for new game
+// create 32 pieces for new game
 function getInitialpieces() {
   let result = [];
-
   for (let i = 0; i < BOARD_SIZE; i++) {
     result.push(new Piece(0, i, PIECES[i], WHITE_PLAYER));
     result.push(new Piece(1, i, PAWN, WHITE_PLAYER));
     result.push(new Piece(6, i, PAWN, BLACK_PLAYER));
     result.push(new Piece(7, i, PIECES[i], BLACK_PLAYER));
-  }
-  return result;
+  } return result;
 }
-
 //add image to cell
 function addImg(cell, player, name) {
   const img = document.createElement("img")
   img.src = 'img/' + player + '/' + name + '.png';
-  img.draggable = false ;
+  img.draggable = false;
   cell.appendChild(img);
 }
-
-// decoration and move by click
-function onCellClick(event, row, col) {
+// selected and possible moves decoration, move player and eat enemy- all by click
+function onCellClick(row, col) {
   const piece = boardData.getPiece(row, col);
-  selectedCell = event.currentTarget;
-  let counterMove = 0;
+  const selectedCell = table.rows[row].cells[col];
 
-  //print possible moves for selceted cell
   if (counterLastPiece > -1) {
-    if (table.rows[row].cells[col].classList[1] == "possible-move") {
+    if (selectedCell.classList[1] == "possible-move") {
       // move piece 
       if (lastPiece[counterLastPiece] !== undefined && piece == undefined) { }
-      game.getMove(row, col, lastPiece[counterLastPiece].type, lastPiece[counterLastPiece].player, lastCell[counterLastPiece].row, lastPiece[counterLastPiece].col, lastCell[counterLastPiece]);
-      updatePiecesArray(boardData.pieces, boardData.getindex(lastPiece[counterLastPiece].row, lastPiece[counterLastPiece].col), row, col, lastPiece[counterLastPiece].type, lastPiece[counterLastPiece].player);
-      counterMove++;
+      game.getMove(row, col, lastPiece[counterLastPiece], lastCell[counterLastPiece]);
     }
-
-    // eat piece
-    else if (table.rows[row].cells[col].classList[1] == "enamy") {
+    // eat enemy piece
+    else if (selectedCell.classList[1] == "enemy") {
       game.getremove(row, col);
-      game.getMove(row, col, lastPiece[counterLastPiece].type, lastPiece[counterLastPiece].player, lastCell[counterLastPiece].row, lastPiece[counterLastPiece].col, lastCell[counterLastPiece]);
-      updatePiecesArray(boardData.pieces, boardData.getindex(lastPiece[counterLastPiece].row, lastPiece[counterLastPiece].col), row, col, lastPiece[counterLastPiece].type, lastPiece[counterLastPiece].player);
-      counterMove++;
+      game.getMove(row, col, lastPiece[counterLastPiece], lastCell[counterLastPiece]);
     }
-    // Clear all previous selected and possible moves
+    // Clear all previous selected and possible moves decoration
     ClearBoard();
   }
-  if (piece !== undefined && counterMove === 0 && game.getTurnMoves(piece) && game.winner === undefined)  {
+  //print possible moves for selceted cell
+  if (piece !== undefined && game.getTurnMoves(piece) && game.winner === undefined) {
     let possibleMoves = piece.getPossibleMoves();
     for (let possibleMove of possibleMoves) {
       const cellRow = possibleMove[0];
@@ -95,30 +79,22 @@ function onCellClick(event, row, col) {
 
       if (boardData.getPiece(cellRow, cellCol) == undefined) {
         cell.classList.add('possible-move');
-      }
-      //W vs B
+      }//W vs B
       else if (boardData.getTeam(cellRow, cellCol) == WHITE_PLAYER && boardData.getTeam(row, col) == BLACK_PLAYER) {
-        cell.classList.add('enamy');
-      }
-      //B vs W
+        cell.classList.add('enemy');
+      }//B vs W
       else if (boardData.getTeam(cellRow, cellCol) == BLACK_PLAYER && boardData.getTeam(row, col) == WHITE_PLAYER) {
-        cell.classList.add('enamy');
+        cell.classList.add('enemy');
       }
     }
   }
-
   // Show selected cell
-  if(game.winner === undefined){
+  if (game.winner === undefined) {
     selectedCell.classList.add('selected');
-  }
-
-  lastPiece.push(piece);
+  } lastPiece.push(piece);
   lastCell.push(selectedCell)
   counterLastPiece++;
-  turn++
-
 }
-
 //creat the board
 function creatChessBoard() {
   table = document.createElement('table');
@@ -132,30 +108,18 @@ function creatChessBoard() {
         cell.className = 'light-cell';
       } else {
         cell.className = 'dark-cell';
-      }
-      // every click on cell onCellClick will start
-      cell.addEventListener('click', (event) => onCellClick(event, row, col));
-     
+      } // every click on cell onCellClick will start
+      cell.addEventListener('click', () => onCellClick(row, col));
     }
-  }
-
-  //print in the console first board data
-  console.log(boardData);
-
-  //add image for every piece
+  } //add image for every piece 
   for (let piece of boardData.pieces) {
     addImg(table.rows[piece.row].cells[piece.col], piece.player, piece.type);
   }
 }
 
 function initGame() {
-  game = new Game(BLACK_PLAYER);
+  game = new Game(WHITE_PLAYER);
   creatChessBoard();
 }
-
-
-// by loaded the page the func started
+// by loaded the page the g started
 window.addEventListener('load', initGame);
-
-
-
